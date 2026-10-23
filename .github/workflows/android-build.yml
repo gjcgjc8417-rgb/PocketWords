@@ -30,7 +30,29 @@ jobs:
 
       - name: Unpack Android project
         run: unzip -q PocketWords-Android-Source-2.zip -d source
+      - name: Align Java and Kotlin versions
+        working-directory: source/PocketWords
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
 
+          p = Path("app/build.gradle.kts")
+          s = p.read_text()
+
+          addition = """
+              compileOptions {
+                  sourceCompatibility = JavaVersion.VERSION_17
+                  targetCompatibility = JavaVersion.VERSION_17
+              }
+              kotlinOptions {
+                  jvmTarget = "17"
+              }
+          """
+
+          if "sourceCompatibility = JavaVersion.VERSION_17" not in s:
+              s = s.replace("android {", "android {" + addition, 1)
+              p.write_text(s)
+          PY
       - name: Build debug APK
         working-directory: source/PocketWords
         run: gradle assembleDebug --no-daemon
