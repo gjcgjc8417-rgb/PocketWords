@@ -31,7 +31,7 @@ jobs:
       - name: Unpack Android project
         run: unzip -q PocketWords-Android-Source-2.zip -d source
       - name: Align Java and Kotlin versions
-        working-directory: source/PocketWords
+        working-directory: source/Source2/PocketWords
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -54,13 +54,13 @@ jobs:
               p.write_text(s)
           PY
       - name: Build debug APK
-        working-directory: source/PocketWords
+        working-directory: source/Source2/PocketWords
         run: gradle assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: PocketWords-debug-apk
-          path: source/PocketWords/app/build/outputs/apk/debug/app-debug.apk
+          path: source/Source2/PocketWords/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 7
